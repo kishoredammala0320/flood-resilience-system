@@ -5,18 +5,34 @@ import xgboost as xgb
 import requests
 from datetime import datetime
 from twilio.rest import Client
-import config # <--- Use the secret file
+
+# --- SECURE CREDENTIAL LOADING ---
+# Try importing from local config.py (works on laptop).
+# If missing, fall back to Streamlit Cloud Secrets.
+try:
+    import config
+    OPENWEATHER_API_KEY = config.OPENWEATHER_API_KEY
+    TWILIO_SID = config.TWILIO_SID
+    TWILIO_AUTH_TOKEN = config.TWILIO_AUTH_TOKEN
+    TWILIO_NUMBER = config.TWILIO_NUMBER
+    TARGET_PHONE = config.TARGET_PHONE
+except ModuleNotFoundError:
+    OPENWEATHER_API_KEY = st.secrets["OPENWEATHER_API_KEY"]
+    TWILIO_SID = st.secrets["TWILIO_SID"]
+    TWILIO_AUTH_TOKEN = st.secrets["TWILIO_AUTH_TOKEN"]
+    TWILIO_NUMBER = st.secrets["TWILIO_NUMBER"]
+    TARGET_PHONE = st.secrets["TARGET_PHONE"]
 
 # --- 1. SMS FUNCTION (Single Target) ---
 def send_sms_alert(city, risk_level):
     try:
-        client = Client(config.TWILIO_SID, config.TWILIO_AUTH_TOKEN)
+        client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
         
-        # Send to only the single target phone defined in config.py
+        # Send to only the single target phone defined in config/secrets
         client.messages.create(
             body=f"🚨 AP FLOOD INTEL: High Risk detected in {city}. Risk Index: {risk_level:.2f}. Please stay alert.",
-            from_=config.TWILIO_NUMBER,
-            to=config.TARGET_PHONE
+            from_=TWILIO_NUMBER,
+            to=TARGET_PHONE
         )
         return True
     except Exception as e:
@@ -39,7 +55,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- 3. CONFIG & ORDERED CITY PROFILES ---
-API_KEY = config.OPENWEATHER_API_KEY
+API_KEY = OPENWEATHER_API_KEY
 CITY_PROFILES = {
     "Kakinada": {"Urban": 10, "Drain": 5, "Coast": 14, "Pop": 7, "Topo": 3, "River": 8},
     "Rajahmundry": {"Urban": 10, "Drain": 5, "Coast": 0, "Pop": 9, "Topo": 4, "River": 15},
