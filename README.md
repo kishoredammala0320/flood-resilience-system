@@ -67,13 +67,25 @@ pip install -r requirements.txt
 ```
 ### 2. Configure Local Credentials
 
-Create a local `config.py` file in the root directory:
+Option A: Local Environment (config.py)
+Create a config.py file in the root directory (make sure it stays in .gitignore):
 
 ```python
+OPENWEATHER_API_KEY = "your_actual_weather_key"
 TWILIO_SID = "your_actual_twilio_sid"
-TWILIO_TOKEN = "your_actual_twilio_token"
-TWILIO_NUMBER = "+1234567890"
-TARGET_NUMBER = "+91XXXXXXXXXX"
+TWILIO_AUTH_TOKEN = "your_actual_twilio_token"
+TWILIO_NUMBER = "your_actual_twilio_number"
+TARGET_PHONE = "your_actual_recipient_number"
+```
+Option B: Streamlit Community Cloud (Deployment)
+If deploying to Streamlit Cloud, do not upload config.py. Instead, go to App Settings -> Secrets and paste:
+
+```python
+OPENWEATHER_API_KEY = "your_actual_weather_key"
+TWILIO_SID = "your_actual_twilio_sid"
+TWILIO_AUTH_TOKEN = "your_actual_twilio_token"
+TWILIO_NUMBER = "your_actual_twilio_number"
+TARGET_PHONE = "your_actual_recipient_number"
 ```
 ### 3. Run the Dashboard
 ```Bash
